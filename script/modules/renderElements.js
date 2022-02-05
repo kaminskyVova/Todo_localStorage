@@ -1,4 +1,4 @@
-import { formPopupControl } from './controls.js';
+import { formPopupControl, formTodoControl,changeStatusTodoControl, deleteContactRow } from './controls.js';
 import {
   createButtonsGroup,
   createAppContainer,
@@ -9,7 +9,6 @@ import {
 } from './createElements.js';
 
 import { getFromStorage } from './storage.js';
-
 
 
 export const renderRegisterForm = (body) => {
@@ -62,10 +61,11 @@ export const renderContactsFromLocalStorage = (password) => {
   let todos = [];
   if (localStorage.length > 0) {
     todos = getFromStorage(`${password}`);
-		console.log('todos: ', todos);
 
-		const todo = todos.map(item => createRow(item))
-		// console.log('todo: ', todo);
+		if(todos != null) {
+			
+		todos.map(item => createRow(item))
+		}
     return todos;
   } else {
     return;
@@ -73,28 +73,33 @@ export const renderContactsFromLocalStorage = (password) => {
 };
 
 
-// export const addRowsToPage = (tbody) => {
-//   tbody.append(createRow);
-// };
+export const addRowsToPage = (todo) => {
+	// const tbody = document.querySelector('tbody')
+	createRow(todo);
+	// changeStatusTodoControl(todo)
+};
 
 
 export const renderTemplate = (user, importanceVal, todoText) => {
+	console.log('user: ', user.password);
 	
 	
-	
-	if(user) {
-		console.log('user: ', user);
-		renderContactsFromLocalStorage(user.password)
-		title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
-	}
 	
 	const { appContainer, title } = createAppContainer();
 	const { formTodo, importance, btnsWrapper } = createFormTodo();
 	const { tableWrapper, table, tbody } = createTable();
-	// addRowsToPage(tbody)
 	
 	appContainer.append(title, formTodo, tableWrapper);
-
+	
+	if(user) {
+		// console.log('user: ', user);
+		renderContactsFromLocalStorage(user.password)
+		// console.log('todo: ', todo);
+		title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
+		changeStatusTodoControl(user.password)
+		deleteContactRow()
+	}
+	
 
   return {
     title,

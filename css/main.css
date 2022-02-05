@@ -72,6 +72,21 @@ body {
   background-image: url('../img/del.svg');
 }
 
+/* Todo */
+
+.form-todo {
+  max-width: 600px ;
+}
+
+
+.table-wrapper {
+  width: 1000px;
+}
+
+thead {
+  text-align: center;
+}
+
 .radio-wrapper {
   margin-bottom: 30px;
 }
@@ -86,6 +101,15 @@ color:rgb(190, 202, 17);
 	color:rgb(255, 38, 0);
 }
 
-.row__id {
-  content: counter(row_id)
+.row__id::before {
+  counter-increment: row_id;                
+  content: counter(row_id);  
+}
+
+.btns {
+  width: 250px;
+}
+
+.task-done {
+  
 }

@@ -1,29 +1,40 @@
-export const setUserToStorage = (user) => {
-	localStorage.setItem(`${user.password}`, JSON.stringify(user));
-};
 
-export const setUserTodoToStorage = (userKey, todos) => {
-	if(userKey && todos) {
-		localStorage.setItem(`${userKey}`, JSON.stringify(todos))
-	}
+export const setUserTodoToStorage = (userKey, todo) => {
+	
+	let todos = []
+	if(userKey && todo) {
+		if(localStorage.length > 0) {
+			todos = JSON.parse(localStorage.getItem(userKey))
+		} else {
+			// todos.push(todo);
+			localStorage.setItem(`${userKey}`, JSON.stringify(todo))
+			localStorage.setItem(`${userKey}`, JSON.stringify(todos));
+		}
+		if(todo) {
+			if(todos === null) {
+				todos =[]
+			}
+			todos.push(todo);
+
+			localStorage.setItem(`${userKey}`, JSON.stringify(todos));
+		}
+	} 
+
 };
 
 export const getFromStorage = (userKey) => {
   const userTodo = JSON.parse(localStorage.getItem(userKey));
-  return localStorage.length > 0 ? userTodo : {};
+  return localStorage.length > 0 ? userTodo : [];
 };
 
+export const removeStorage = (key, todo) => {
+  let todos = JSON.parse(localStorage.getItem(key));
+  let newTodos = [];
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].id != todo.id) {
+      newTodos.push(todos[i]);
+    }
+  }
 
-export const setStorage = (key, contact) => {
-  let contacts = [];
-  if (localStorage.length > 0) {
-    contacts = JSON.parse(localStorage.getItem(key));
-  } else {
-    localStorage.setItem(key, JSON.stringify(contact));
-  }
-  if (contacts) {
-    localStorage.removeItem(key);
-    contacts.push(contact);
-    localStorage.setItem(key, JSON.stringify(contacts));
-  }
+  localStorage.setItem(key, JSON.stringify(newTodos));
 };

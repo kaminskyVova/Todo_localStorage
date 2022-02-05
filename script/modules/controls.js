@@ -1,9 +1,9 @@
 import { createRadioGroup } from './createElements.js';
-import { renderTemplate } from './renderElements.js';
+import { addRowsToPage, renderTemplate } from './renderElements.js';
 import {
   getFromStorage,
   setUserTodoToStorage,
-  // setUserToStorage,
+	removeStorage,
 } from './storage.js';
 
 export const formPopupControl = (form, overlay) => {
@@ -22,7 +22,7 @@ export const formPopupControl = (form, overlay) => {
 			password: newUser.password,
 			todos: [],
 		}
-		console.log('newUser: ', newUser);
+		// console.log('newUser: ', newUser);
 
     // const {userTodo} = setUserToStorage(newUser);
     // getFromStorage(newUser.password)
@@ -49,11 +49,12 @@ export const popupControl = (overlay, target) => {
 };
 
 export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
-  let todos = [];
 
-  if (user) {
-    console.log('userKey: ', user.password);
-  }
+  // if (user) {
+  //   console.log('userKey: ', user.password);
+  // }
+
+	let todo = ''
 
   const inputTodo = formTodo.querySelector('.form-control');
   const btns = formTodo.querySelectorAll('button');
@@ -89,18 +90,71 @@ export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
     const formData = new FormData(e.target);
     const newTodo = Object.fromEntries(formData);
 
-    todos.push({
+    todo = {
       id: Math.random().toString().substring(2, 10),
       todo: newTodo.todo,
       importance: newTodo.importance,
       done: false,
-    });
+    };
 
-    console.log(todos);
-    setUserTodoToStorage(`${user.password}`, user.todos = todos);
+		addRowsToPage(todo)
+    setUserTodoToStorage(`${user.password}`, todo);
+		deleteContactRow(todo, user.password)
     formTodo.reset();
     importance.style.display = 'none';
     btns.forEach((btn) => btn.setAttribute('disabled', true));
-    return { todos };
+		
+		changeStatusTodoControl(user.password, todo)
+		
+  });
+
+};
+
+const changeStatusDone = (todos, item, userKey) => {
+	console.log('item.id: ', item.id);
+	todos.map(obj => {
+		console.log('obj.id: ', obj.id);
+		if(obj.id === item.id && obj.done === false) {
+			obj.done === true
+		} else {
+			obj.done = false
+		}
+		console.log('todos1: ', todos);
+	})
+
+	
+}
+
+
+export const changeStatusTodoControl = (userKey, item) => {
+	
+	const doneBtn = document.querySelectorAll('.done')
+	
+	doneBtn.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const todos = JSON.parse(localStorage.getItem(userKey))
+			console.log('todos: ', todos);
+
+			todos.map(item => changeStatusDone(todos, item))
+			console.log('todos2: ', todos);
+			// item.classList.toggle('task-done')
+	})
+
+})
+
+}
+
+export const deleteContactRow = (todo, userKey) => {
+
+const todoForm = document.querySelector('.table-wrapper')
+todoForm.addEventListener('click', (e) => {
+    const target = e.target;
+
+    if (target.classList.contains('delete')) {
+
+      // removeStorage(userKey, todo);
+      target.closest('.table-light').remove();
+    }
   });
 };
+// deleteContactRow()

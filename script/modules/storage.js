@@ -5,7 +5,6 @@ export const getFromStorage = (userKey) => {
 
 
 export const setUserTodoToStorage = (userKey, todo) => {
-	console.log('userKey: ', userKey);
 	
 	let todos = []
 	if(userKey && todo) {
@@ -23,32 +22,8 @@ export const setUserTodoToStorage = (userKey, todo) => {
 
 		return {todo}
 
-		// todos.filter(item => {
-		// 	for(let i = 0; i < todos.length; i++) {
-		// 		if(todos[i].todo === item.todo) {
-		// 			return false
-		// 		}
-		// 		return todos.push(item)
-		// 	}
-		// })
-
-		// const newTodos = [...filterTodos, ...todos]
-		// localStorage.setItem(`${userKey}`, JSON.stringify(newTodos));
 	} else {
 		return
 	}
 
-};
-
-
-export const removeStorage = (key, todo) => {
-  let todos = JSON.parse(localStorage.getItem(key));
-  let newTodos = [];
-  for (let i = 0; i < todos.length; i++) {
-    if (todos[i].id != todo.id) {
-      newTodos.push(todos[i]);
-    }
-  }
-
-  localStorage.setItem(key, JSON.stringify(newTodos));
 };

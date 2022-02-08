@@ -37,7 +37,7 @@ export const popupControl = (overlay, target) => {
   }
 };
 
-export const formTodoControl = (formTodo, importance, user) => {
+export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
 
   let todos = [];
   let todo = {};
@@ -88,7 +88,7 @@ export const formTodoControl = (formTodo, importance, user) => {
 
     addRowToPage(todo, user.password);
 
-    setUserTodoToStorage(`${user.password}`, todo);
+    setUserTodoToStorage(`${user.name}:${user.password}`, todo);
     formTodo.reset();
     importance.style.display = 'none';
     btns.forEach((btn) => btn.setAttribute('disabled', true));

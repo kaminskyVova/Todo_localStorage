@@ -1,5 +1,9 @@
-import { formPopupControl, changeStatusTodoControl } from './controls.js';
-import { getFromStorage } from './storage.js';
+import {
+  changeStatusTodoControl,
+  setDoneTodoItem,
+  deleteTodoItem,
+  deleteTodoFromStorage,
+} from './controls.js';
 
 export const createButtonsGroup = (params) => {
   const btnWrapper = document.createElement('div');
@@ -25,7 +29,8 @@ export const createButtonsGroup = (params) => {
 
 export const createAppContainer = () => {
   const appContainer = document.querySelector('.app-container');
-  appContainer.className = 'app-container vh-100 w-100 d-flex align-items-center justify-content-center flex-column';
+  appContainer.className =
+    'app-container vh-100 w-100 d-flex align-items-center justify-content-center flex-column';
 
   const title = document.createElement('h3');
   title.classList.add('todo-title');
@@ -65,7 +70,7 @@ export const createFormTodo = () => {
   const formTodo = document.createElement('form');
   formTodo.className = 'd-flex flex-column align-items-center mb-3 form-todo';
   const btnsWrapper = document.createElement('div');
-  btnsWrapper.className = ''
+  btnsWrapper.className = '';
 
   const { importance } = createRadioGroup();
 
@@ -144,12 +149,8 @@ export const createTable = () => {
   };
 };
 
-export const createRow = (todo) => {
-  const tbody = document.querySelector('tbody')
-  // console.log('tbody: ', tbody);
-  // console.log('todo: ', todo);
-  // console.log('importance: ', importance);
-  // console.log('todoText: ', todoText);
+export const createRow = (todo, userKey) => {
+  const tbody = document.querySelector('tbody');
 
   const buttonGroup = createButtonsGroup([
     {
@@ -172,25 +173,35 @@ export const createRow = (todo) => {
 
   const tdText = document.createElement('td');
   tdText.classList.add('task');
-  if (todo.importance === 'light') {
-    tdText.textContent = todo.todo;
-    tdText.style.color = 'rgb(190, 202, 17)'
-  }
-  if (todo.importance === 'warning') {
-    tdText.textContent = todo.todo;
-    tdText.style.color = 'rgb(255, 136, 0)'
-  }
-  if (todo.importance === 'danger') {
-    tdText.textContent = todo.todo;
-    tdText.style.color = 'rgb(255, 38, 0)'
-  }
 
   const tdCondition = document.createElement('td');
   tdCondition.classList.add('condition');
-  if(todo.done === false) {
-    tdCondition.textContent = 'в процессе'
-  } else {
-    tdCondition.textContent = 'выполнено'
+
+  if (todo) {
+    tdText.textContent = todo.todo;
+
+    if (todo.importance === 'light') {
+      tdText.textContent = todo.todo;
+      tdText.style.color = 'rgb(190, 202, 17)';
+    }
+    if (todo.importance === 'warning') {
+      tdText.textContent = todo.todo;
+      tdText.style.color = 'rgb(255, 136, 0)';
+    }
+    if (todo.importance === 'danger') {
+      tdText.textContent = todo.todo;
+      tdText.style.color = 'rgb(255, 38, 0)';
+    }
+    if (todo.done === false) {
+      tdCondition.textContent = 'в процессе';
+      tdText.classList.remove('task-done');
+      buttonGroup.btns[1].textContent = 'Завершить'
+    }
+    if (todo.done === true) {
+      tdText.classList.add('task-done');
+      tdCondition.textContent = 'выполнено';
+      buttonGroup.btns[1].textContent = 'Готово'
+    }
   }
 
   const tdBtns = document.createElement('td');
@@ -199,11 +210,13 @@ export const createRow = (todo) => {
   tdBtns.append(...buttonGroup.btns);
 
   tr.append(rowId, tdText, tdCondition, tdBtns);
-  // console.log('tr: ', tr);
 
-  tbody.append(tr)
+  tbody.append(tr);
 
-  // changeStatusTodoControl()
+  changeStatusTodoControl(tr, todo, userKey);
+  setDoneTodoItem(tr);
+  deleteTodoFromStorage(tr, todo, userKey);
+  deleteTodoItem(tr);
 
   return {
     tr,

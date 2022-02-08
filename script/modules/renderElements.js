@@ -1,15 +1,13 @@
-import { formPopupControl, formTodoControl,changeStatusTodoControl, deleteContactRow } from './controls.js';
+import { formTodoControl } from './controls.js';
 import {
   createButtonsGroup,
   createAppContainer,
   createFormTodo,
-  createRadioGroup,
   createTable,
-	createRow,
+  createRow,
 } from './createElements.js';
 
 import { getFromStorage } from './storage.js';
-
 
 export const renderRegisterForm = (body) => {
   const overlay = document.createElement('div');
@@ -57,55 +55,42 @@ export const renderRegisterForm = (body) => {
   return { form, overlay };
 };
 
-export const renderContactsFromLocalStorage = (password) => {
+export const renderTodosFromLocalStorage = (password) => {
   let todos = [];
   if (localStorage.length > 0) {
     todos = getFromStorage(`${password}`);
 
-		if(todos != null) {
-			
-		todos.map(item => createRow(item))
-		}
+    if (todos != null) {
+      todos.map((item) => createRow(item, password));
+    }
     return todos;
   } else {
     return;
   }
 };
 
-
-export const addRowsToPage = (todo) => {
-	// const tbody = document.querySelector('tbody')
-	createRow(todo);
-	// changeStatusTodoControl(todo)
+export const addRowToPage = (todo, userKey) => {
+  createRow(todo, userKey);
 };
 
-
 export const renderTemplate = (user, importanceVal, todoText) => {
-	console.log('user: ', user.password);
-	
-	
-	
-	const { appContainer, title } = createAppContainer();
-	const { formTodo, importance, btnsWrapper } = createFormTodo();
-	const { tableWrapper, table, tbody } = createTable();
-	
-	appContainer.append(title, formTodo, tableWrapper);
-	
-	if(user) {
-		// console.log('user: ', user);
-		renderContactsFromLocalStorage(user.password)
-		// console.log('todo: ', todo);
-		title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
-		changeStatusTodoControl(user.password)
-		deleteContactRow()
-	}
-	
+  const { appContainer, title } = createAppContainer();
+  const { formTodo, importance, btnsWrapper } = createFormTodo();
+  const { tableWrapper, table, tbody } = createTable();
+
+  appContainer.append(title, formTodo, tableWrapper);
+
+  if (user) {
+    formTodoControl(formTodo, importance, btnsWrapper, user);
+    renderTodosFromLocalStorage(user.password);
+    title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
+  }
 
   return {
     title,
     formTodo,
     importance,
     table,
-		btnsWrapper,
+    btnsWrapper,
   };
 };

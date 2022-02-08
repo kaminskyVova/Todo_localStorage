@@ -1,9 +1,6 @@
-import { createRadioGroup } from './createElements.js';
-import { addRowsToPage, renderTemplate } from './renderElements.js';
+import { addRowToPage, renderTemplate } from './renderElements.js';
 import {
-  getFromStorage,
   setUserTodoToStorage,
-	removeStorage,
 } from './storage.js';
 
 export const formPopupControl = (form, overlay) => {
@@ -17,21 +14,13 @@ export const formPopupControl = (form, overlay) => {
     form.reset();
     overlay.classList.remove('is-visible');
 
-		newUser = {
-			name: newUser.name,
-			password: newUser.password,
-			todos: [],
-		}
-		// console.log('newUser: ', newUser);
+    newUser = {
+      name: newUser.name,
+      password: newUser.password,
+      todos: [],
+    };
 
-    // const {userTodo} = setUserToStorage(newUser);
-    // getFromStorage(newUser.password)
-    // const userName = getFromStorage(newUser.password)
-
-    // const title = document.querySelector('h3')
-    // title.textContent = `ToDo App пользователь: ${userName.name.toUpperCase()}`;
     const { formTodo, importance, btnsWrapper } = renderTemplate(newUser);
-    formTodoControl(formTodo, importance, btnsWrapper, newUser);
   });
 
   return {
@@ -48,13 +37,10 @@ export const popupControl = (overlay, target) => {
   }
 };
 
-export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
+export const formTodoControl = (formTodo, importance, user) => {
 
-  // if (user) {
-  //   console.log('userKey: ', user.password);
-  // }
-
-	let todo = ''
+  let todos = [];
+  let todo = {};
 
   const inputTodo = formTodo.querySelector('.form-control');
   const btns = formTodo.querySelectorAll('button');
@@ -97,64 +83,92 @@ export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
       done: false,
     };
 
-		addRowsToPage(todo)
+    // todo = newTodo
+    todos.push(todo);
+
+    addRowToPage(todo, user.password);
+
     setUserTodoToStorage(`${user.password}`, todo);
-		deleteContactRow(todo, user.password)
     formTodo.reset();
     importance.style.display = 'none';
     btns.forEach((btn) => btn.setAttribute('disabled', true));
-		
-		changeStatusTodoControl(user.password, todo)
-		
-  });
 
+    return todo;
+  });
 };
 
-const changeStatusDone = (todos, item, userKey) => {
-	console.log('item.id: ', item.id);
-	todos.map(obj => {
-		console.log('obj.id: ', obj.id);
-		if(obj.id === item.id && obj.done === false) {
-			obj.done === true
-		} else {
-			obj.done = false
-		}
-		console.log('todos1: ', todos);
-	})
-
-	
-}
-
-
-export const changeStatusTodoControl = (userKey, item) => {
-	
-	const doneBtn = document.querySelectorAll('.done')
-	
-	doneBtn.forEach(btn => {
-		btn.addEventListener('click', () => {
-			const todos = JSON.parse(localStorage.getItem(userKey))
-			console.log('todos: ', todos);
-
-			todos.map(item => changeStatusDone(todos, item))
-			console.log('todos2: ', todos);
-			// item.classList.toggle('task-done')
-	})
-
-})
-
-}
-
-export const deleteContactRow = (todo, userKey) => {
-
-const todoForm = document.querySelector('.table-wrapper')
-todoForm.addEventListener('click', (e) => {
-    const target = e.target;
-
-    if (target.classList.contains('delete')) {
-
-      // removeStorage(userKey, todo);
-      target.closest('.table-light').remove();
+export const changeTodoDoneLocal = (arr, item) => {
+  arr.map((obj) => {
+		if (obj.id === item.id && obj.done === false) {
+      obj.done = true;
+    } else if (obj.id === item.id && obj.done === true){
+      obj.done = false;
     }
   });
 };
-// deleteContactRow()
+
+export const changeStatusTodoControl = (item, todo, userKey) => {
+  item.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.classList.contains('done')) {
+      const todoArr = JSON.parse(localStorage.getItem(userKey));
+      changeTodoDoneLocal(todoArr, todo);
+      localStorage.setItem(userKey, JSON.stringify(todoArr));
+    }
+  });
+};
+
+export const setDoneTodoItem = (item) => {
+  if (item) {
+    item.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.classList.contains('done')) {
+        const text = item.querySelector('.task');
+        const cond = item.querySelector('.condition');
+				const doneBtn = item.querySelector('.done')
+        text.classList.toggle('task-done');
+        if (cond.textContent === 'в процессе') {
+          cond.textContent = 'выполнено';
+					doneBtn.textContent = 'Готово!';
+        } else if (cond.textContent === 'выполнено') {
+          cond.textContent = 'в процессе';
+					doneBtn.textContent = 'Завершить';
+        }
+      }
+    });
+  }
+};
+
+export const  deleteTodo = (arr, item) => {
+	console.log('arr: ', arr);
+	const newArr = arr.filter(obj => obj.id != item.id)
+	console.log('newArr: ', newArr);
+	return {
+		newArr,
+	}
+} 
+
+export const deleteTodoFromStorage = (item, todo, userKey) => {
+	item.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.classList.contains('delete')) {
+      const todoArr = JSON.parse(localStorage.getItem(userKey));
+      const {newArr} = deleteTodo(todoArr, todo);
+      localStorage.setItem(userKey, JSON.stringify(newArr));
+    }
+  });
+
+}
+
+export const deleteTodoItem = (item) => {
+  if (item) {
+    item.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.classList.contains('delete')) {
+        if (confirm('Точно удалить?')) {
+          item.remove();
+        }
+      }
+    });
+  }
+};

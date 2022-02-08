@@ -111,5 +111,6 @@ color:rgb(190, 202, 17);
 }
 
 .task-done {
-  
+  text-decoration: line-through;
+  text-decoration-style: double;
 }

@@ -82,7 +82,7 @@ export const renderTemplate = (user, importanceVal, todoText) => {
 
   if (user) {
     formTodoControl(formTodo, importance, btnsWrapper, user);
-    renderTodosFromLocalStorage(`${user.name}:${user.password}`);
+    renderTodosFromLocalStorage(`${user.password}`);
     title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
   }
 

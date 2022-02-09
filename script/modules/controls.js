@@ -88,7 +88,7 @@ export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
 
     addRowToPage(todo, user.password);
 
-    setUserTodoToStorage(`${user.name}:${user.password}`, todo);
+    setUserTodoToStorage(`${user.password}`, todo);
     formTodo.reset();
     importance.style.display = 'none';
     btns.forEach((btn) => btn.setAttribute('disabled', true));

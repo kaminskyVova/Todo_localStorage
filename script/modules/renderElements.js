@@ -56,6 +56,7 @@ export const renderRegisterForm = (body) => {
 };
 
 export const renderTodosFromLocalStorage = (password) => {
+  console.log('password: ', password);
   let todos = [];
   if (localStorage.length > 0) {
     todos = getFromStorage(`${password}`);
@@ -69,8 +70,9 @@ export const renderTodosFromLocalStorage = (password) => {
   }
 };
 
-export const addRowToPage = (todo, userKey) => {
-  createRow(todo, userKey);
+export const addRowToPage = (todo,userName, userKey) => {
+  const key = `${userName}:${userKey}`
+  createRow(todo, key);
 };
 
 export const renderTemplate = (user, importanceVal, todoText) => {
@@ -82,7 +84,7 @@ export const renderTemplate = (user, importanceVal, todoText) => {
 
   if (user) {
     formTodoControl(formTodo, importance, btnsWrapper, user);
-    renderTodosFromLocalStorage(`${user.password}`);
+    renderTodosFromLocalStorage(`${user.name}:${user.password}`);
     title.textContent = `ToDo App пользователь: ${user.name.toUpperCase()}`;
   }
 

@@ -1,7 +1,5 @@
 import { addRowToPage, renderTemplate } from './renderElements.js';
-import {
-  setUserTodoToStorage,
-} from './storage.js';
+import { setUserTodoToStorage } from './storage.js';
 
 export const formPopupControl = (form, overlay) => {
   let newUser = {};
@@ -29,16 +27,12 @@ export const formPopupControl = (form, overlay) => {
 };
 
 export const popupControl = (overlay, target) => {
-  if (
-    target.classList.contains('close') ||
-    target.classList.contains('form-overlay')
-  ) {
+  if (target.classList.contains('close')) {
     overlay.classList.remove('is-visible');
   }
 };
 
 export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
-
   let todos = [];
   let todo = {};
 
@@ -99,9 +93,9 @@ export const formTodoControl = (formTodo, importance, btnsWrapper, user) => {
 
 export const changeTodoDoneLocal = (arr, item) => {
   arr.map((obj) => {
-		if (obj.id === item.id && obj.done === false) {
+    if (obj.id === item.id && obj.done === false) {
       obj.done = true;
-    } else if (obj.id === item.id && obj.done === true){
+    } else if (obj.id === item.id && obj.done === true) {
       obj.done = false;
     }
   });
@@ -125,40 +119,39 @@ export const setDoneTodoItem = (item) => {
       if (target.classList.contains('done')) {
         const text = item.querySelector('.task');
         const cond = item.querySelector('.condition');
-				const doneBtn = item.querySelector('.done')
+        const doneBtn = item.querySelector('.done');
         text.classList.toggle('task-done');
         if (cond.textContent === 'в процессе') {
           cond.textContent = 'выполнено';
-					doneBtn.textContent = 'Готово!';
+          doneBtn.textContent = 'Готово!';
         } else if (cond.textContent === 'выполнено') {
           cond.textContent = 'в процессе';
-					doneBtn.textContent = 'Завершить';
+          doneBtn.textContent = 'Завершить';
         }
       }
     });
   }
 };
 
-export const  deleteTodo = (arr, item) => {
-	console.log('arr: ', arr);
-	const newArr = arr.filter(obj => obj.id != item.id)
-	console.log('newArr: ', newArr);
-	return {
-		newArr,
-	}
-} 
+export const deleteTodo = (arr, item) => {
+  console.log('arr: ', arr);
+  const newArr = arr.filter((obj) => obj.id != item.id);
+  console.log('newArr: ', newArr);
+  return {
+    newArr,
+  };
+};
 
 export const deleteTodoFromStorage = (item, todo, userKey) => {
-	item.addEventListener('click', (e) => {
+  item.addEventListener('click', (e) => {
     const target = e.target;
     if (target.classList.contains('delete')) {
       const todoArr = JSON.parse(localStorage.getItem(userKey));
-      const {newArr} = deleteTodo(todoArr, todo);
+      const { newArr } = deleteTodo(todoArr, todo);
       localStorage.setItem(userKey, JSON.stringify(newArr));
     }
   });
-
-}
+};
 
 export const deleteTodoItem = (item) => {
   if (item) {
